@@ -94,7 +94,7 @@ Stack* CreateStack()
 	return out;
 } 
 
-double stack_get(Stack * stack)
+T stack_get(Stack * stack)
 {
 	WrongStackDeath;
 	
@@ -104,7 +104,7 @@ double stack_get(Stack * stack)
 void Resize(Stack *stack)
 {
 	int i = 0;
-	T* suicider;
+	T* suicider = 0;
 
 	WrongStackDeath(stack);
 
@@ -149,42 +149,9 @@ T pop(Stack *stack)
 	WrongStackDeath(stack);
 
 	return a;
-}
-
-T choose(T a, T b, char c)
-{
-	if ( c == '*')
-		return a * b;
-	else
-		if ( c == '/')
-			return a / b;
-		else
-			if ( c == '+')
-				return a + b;
-			else
-				return a - b;
-}
 
 int main()
 {
-	char c[1000];
-	int i = 0;
-	int j = 0;
-	Stack *s = CreateStack();
-	for (i = 0; 1 == scanf("%c", c[i]); i++)
-	{
-		if (c[i] <= '9', c[i] >= '0')
-		{
-			push( (T) c[i]);
-			j++;
-		}
-		else
-			if (c[i] != ' ')
-				push(choose(pop(s), pop(s), c[i]);
-
-		
-			
-    DeleteStack (s);
 
 	return 0;
 }
