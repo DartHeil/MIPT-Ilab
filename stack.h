@@ -38,7 +38,9 @@ void damp(Stack * stack)
 {
 	FILE * Raport;
 	int i = 0;
-	Raport = fopen("Raport.txt","wt");
+	Raport = fopen("Raport.txt","a");
+
+	fprintf(Raport, "Проблема в Stack\n";
 
 	fprintf(Raport, "Номер ошибки: %d\n", CheckStack(stack));
 
@@ -59,7 +61,7 @@ void damp(Stack * stack)
 	fclose(Raport);
 }
 
-void Death(Stack * stack)
+void Stack_death(Stack * stack)
 {
 	damp(stack);
 
@@ -69,7 +71,7 @@ void Death(Stack * stack)
 void WrongStackDeath(Stack * stack)
 {
 	if (CheckStack(stack) != 0)
-		Death(stack);
+		Stack_death(stack);
 }
 
 void DeleteStack(Stack * stack)
@@ -121,7 +123,7 @@ void Resize(Stack *stack)
 	}
 
 	else
-		Death(stack);
+		Stack_death(stack);
 
 	WrongStackDeath(stack);
 }
