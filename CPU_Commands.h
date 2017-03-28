@@ -1,7 +1,21 @@
+#ifndef CPU_commands_H_INCLUDED 
+#define CPU_commands_H_INCLUDED
+
 #include <stdio.h>
+#include <math.h>
+
 #include <commands.h>
 #include <stack.h>
+
 #define ERROR -1
+
+typedef struct CPU_s
+{
+		Stack* stack;
+		T ax, bx, cx, dx, ex, fx, gx, hx;
+				
+}CPU;
+
 
 int CPU_check(CPU * cpu)
 {
@@ -21,17 +35,17 @@ void CPU_damp(CPU * cpu)
 	int i = 0;
 	Raport = fopen("Raport.txt","a");
 
-	fprintf(Raport, "Проблема в CPU\n";
+	fprintf(Raport, "Проблема в CPU\n");
 
 	fprintf(Raport, "Номер ошибки: %d\n", CPU_check(cpu));
 
 	fprintf(Raport, "Указатель на cpu: %p\n",  cpu);
 	fprintf(Raport, "Указатель на data: %p\n",  cpu -> stack -> data);
 
-	fprintf(Raport, "Мой stack:\n")
+	fprintf(Raport, "Мой stack:\n");
 
 	if ( cpu -> stack -> data)
-		fprintf(Raport,"В top лежит: %lf\n", cpu -> stack -> data  [stack -> top]);
+		fprintf(Raport,"В top лежит: %lf\n", cpu -> stack -> data  [cpu -> stack -> top]);
 
 	fprintf(Raport, "Указатель на data: %p\n",  cpu -> stack -> data);
 	fprintf(Raport,"Top по счету: %d\n", cpu -> stack -> top);
@@ -39,7 +53,7 @@ void CPU_damp(CPU * cpu)
 	fprintf(Raport, "Stack:");
 
 	if (cpu -> stack -> data)
-		for (i = 0; i <= cpu - > stack -> size; i++)
+		for (i = 0; i <= (cpu -> stack -> size); i++)
 			fprintf(Raport, "%lf\n", cpu -> stack -> data [i]);
 
 	fprintf(Raport, "Я закончился");
@@ -54,11 +68,31 @@ void CPU_death(CPU * cpu)
 	exit(1);
 }
 
-void CPU_assert(cpu)
+void CPU_assert(CPU * cpu)
 {
 	if (CPU_check(cpu) != 0)
 		CPU_death(cpu);
 }
+
+CPU* CPU_create()
+{
+	CPU *out = calloc(1, sizeof(CPU));
+	
+	out -> stack = CreateStack();
+
+	out -> ax = 0;
+	out -> bx = 0;
+	out -> cx = 0;
+	out -> dx = 0;
+	out -> ex = 0;
+	out -> fx = 0;
+	out -> gx = 0;
+	out -> hx = 0;
+	
+	CPU_assert(out);
+
+	return out;
+} 
 
 void CPU_delete(CPU * cpu)
 {
@@ -67,10 +101,15 @@ void CPU_delete(CPU * cpu)
 	cpu = NULL;
 }
 
-void CPU_in(CPU * cpu, int reg, T value)
+void CPU_in(CPU * cpu, int reg)
 {
-	CPU_assert(cpu)	
+	T value = 0;
 
+	CPU_assert(cpu);	
+	
+	printf("Введите значение регистра %d\n", reg);
+	scanf("%lf\n", &value);	
+	
 	if ( reg == ax )
 		cpu -> ax = value;
 	if ( reg == bx )
@@ -88,12 +127,12 @@ void CPU_in(CPU * cpu, int reg, T value)
 	if ( reg == hx )
 		cpu -> hx = value;
 
-	CPU_assert(cpu)
+	CPU_assert(cpu);
 }
 
 T CPU_out(CPU * cpu, int reg)
 {
-	CPU_assert(cpu)
+	CPU_assert(cpu);
 
 	if ( reg == ax )
 		return cpu -> ax;
@@ -114,72 +153,72 @@ T CPU_out(CPU * cpu, int reg)
 	return ERROR;
 }
 
-void CPU_add(Stack * stack)
+void CPU_add(CPU * cpu)
 {
-	CPU_assert(cpu)
+	CPU_assert(cpu);
 
-	int a = stack_pop(stack);
-	int b = stack_pop(stack);
-	stack_push(stack, a + b);
+	int a = stack_pop(cpu -> stack);
+	int b = stack_pop(cpu -> stack);
+	stack_push(cpu -> stack, a + b);
 
-	CPU_assert(cpu)
+	CPU_assert(cpu);
 }
 
-void CPU_mul(Stack * stack)
+void CPU_mul(CPU * cpu)
 {
-	CPU_assert(cpu)
+	CPU_assert(cpu);
 
-	int a = stack_pop(stack);
-	int b = stack_pop(stack);
-	stack_push(stack, a * b);
+	int a = stack_pop(cpu -> stack);
+	int b = stack_pop(cpu -> stack);
+	stack_push(cpu -> stack, a * b);
 
-	CPU_assert(cpu)
+	CPU_assert(cpu);
 }
 
-void CPU_sub(Stack * stack)
+void CPU_sub(CPU * cpu)
 {
-	CPU_assert(cpu)
+	CPU_assert(cpu);
 
-	int a = stack_pop(stack);
-	int b = stack_pop(stack);
-	stack_push(stack, a - b);
+	int a = stack_pop(cpu -> stack);
+	int b = stack_pop(cpu -> stack);
+	stack_push(cpu -> stack, a - b);
 
-	CPU_assert(cpu)
+	CPU_assert(cpu);
 }
 
-void CPU_div(Stack * stack)
+void CPU_div(CPU * cpu)
 {
-	CPU_assert(cpu)
+	CPU_assert(cpu);
 
-	int a = stack_pop(stack);
-	int b = stack_pop(stack);
-	stack_push(stack, a / b);
+	int a = stack_pop(cpu -> stack);
+	int b = stack_pop(cpu -> stack);
+	stack_push(cpu -> stack, a / b);
 
-	CPU_assert(cpu)
+	CPU_assert(cpu);
 }
 
-void CPU_sqrt(Stack * stack)
+/*void CPU_sqrt(CPU * cpu)
 {
-	CPU_assert(cpu)
+	CPU_assert(cpu);
 
-	int a = stack_pop(stack);
-	stack_push(stack, sqrt(a));
+	T a = stack_pop(cpu -> stack);
+	stack_push(cpu -> stack, sqrt(a));
 
-	CPU_assert(cpu)
-}
+	CPU_assert(cpu);
+}*/
 
-void CPU_push(Stack * stack, T value)
+void CPU_push(CPU * cpu, T value)
 {
-	CPU_assert(cpu)
+	CPU_assert(cpu);
 
-	stack_push(stack, value);
+	stack_push(cpu -> stack, value);
 
-	CPU_assert(cpu)
+	CPU_assert(cpu);
 }
 
 void CPU_popr(int reg, CPU * cpu)
 {
-	CPU_assert(cpu)		
+	CPU_assert(cpu);		
 
 	if ( reg == ax )
 		cpu -> ax = stack_pop(cpu -> stack);
@@ -198,39 +237,52 @@ void CPU_popr(int reg, CPU * cpu)
 	if ( reg == hx )
 		cpu -> hx = stack_pop(cpu -> stack);
 
-	CPU_assert(cpu)
+	CPU_assert(cpu);
 }
 
 void CPU_pushr(int reg, CPU * cpu)
 {
-	CPU_assert(cpu)
+	CPU_assert(cpu);
 	
 	if ( reg == ax )
-		CPU_push(cpu -> stack, cpu -> ax); 
+		CPU_push(cpu, cpu -> ax); 
 	if ( reg == bx )
-		CPU_push(cpu -> stack, cpu -> bx); 
+		CPU_push(cpu, cpu -> bx); 
 	if ( reg == cx )
-		CPU_push(cpu -> stack, cpu -> cx); 
+		CPU_push(cpu, cpu -> cx); 
 	if ( reg == dx )
-		CPU_push(cpu -> stack, cpu -> dx); 
+		CPU_push(cpu, cpu -> dx); 
 	if ( reg == ex )
-		CPU_push(cpu -> stack, cpu -> ex); 
+		CPU_push(cpu, cpu -> ex); 
 	if ( reg == fx )
-		CPU_push(cpu -> stack, cpu -> fx); 
+		CPU_push(cpu, cpu -> fx); 
 	if ( reg == gx )
-		CPU_push(cpu -> stack, cpu -> gx); 
+		CPU_push(cpu, cpu -> gx); 
 	if ( reg == hx )
-		CPU_push(cpu -> stack, cpu -> hx);
+		CPU_push(cpu, cpu -> hx);
 
-	CPU_assert(cpu) 
+	CPU_assert(cpu); 
 }
 
 void CPU_end(CPU * cpu)
 {
-	CPU_assert(cpu)
+	CPU_assert(cpu);
+	
+	printf("Successfully");
 
 	CPU_delete(cpu);
 }
+
+/*void CPU_jmp(CPU * cpu, int value)
+{
+	return value;
+}*/
+
+
+
+
+
+#endif
 	
 
 
