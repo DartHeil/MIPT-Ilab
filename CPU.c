@@ -4,7 +4,6 @@
 #include <assembler.h>
 #include <commands.h>
 #include <stack.h>
-//#include <assembler.h>
 #include <CPU_Commands.h>
 
 /*typedef struct CPU_s
@@ -22,6 +21,8 @@ int CPU_Function(CPU * cpu)
 	int CommandCounter = 0;
 	int CountOfCommand = 0;
 	FILE* CPU_code = fopen( "CPU_code.txt", "r" );
+
+	printf("RRR\n");
 	
 /*	if((CPU_code == NULL)
 	{
@@ -33,13 +34,37 @@ int CPU_Function(CPU * cpu)
 	return 0;
 	} */
 
-	fseek(CPU_code,0,SEEK_END);
+	int i = 0;
+	int s = 0;
+ 
+	while ((fscanf(CPU_code, "%d",&s)!=EOF))
+	{    if(!CPU_code) break;    
+	        CountOfCommand+=1;
+	}
+	int * Programm = (int*) calloc(CountOfCommand, sizeof(int)); 
+ 
+	rewind(CPU_code);
+	for(i = 0; i < CountOfCommand; i++)
+	{
+	    fscanf(CPU_code, "%d", &Programm[i]);
+	    printf("c[%d]=%d\n", i, Programm[i]);
+	}
+	fclose(CPU_code);
+
+/*	fseek(CPU_code,0,SEEK_END);
 	CountOfCommand = ftell(CPU_code)/sizeof(int);
 	int * Programm = calloc(CountOfCommand, sizeof(int));
 	fread(Programm, sizeof(int), CountOfCommand, CPU_code);
-	fclose(CPU_code);	
+	fclose(CPU_code); */	
+	
 
-	while ( CommandCounter < CountOfCommand - 2 )
+Kek:	if ( Programm[CommandCounter] ==  CMD_END )
+	{
+		++ CommandCounter;
+		CPU_end(cpu);
+		return 0;
+	}
+	else
         {
 		if ( Programm[CommandCounter] == CMD_PUSH )
 		{
@@ -93,7 +118,7 @@ int CPU_Function(CPU * cpu)
 		{
 			++ CommandCounter;
 
-			printf("Значение регистра %d: %lg\n", Programm[CommandCounter], CPU_out(cpu, value));
+			printf("Значение регистра %d: %lg\n", Programm[CommandCounter], CPU_out(cpu, Programm[CommandCounter]));
 
 			++ CommandCounter;
 		}
@@ -116,30 +141,39 @@ int CPU_Function(CPU * cpu)
 			++ CommandCounter;
 		}
 
-		if ( Programm[CommandCounter] ==  CMD_END )
+	/*	if ( Programm[CommandCounter] ==  CMD_END )
 		{
 			++ CommandCounter;
 			CPU_end(cpu);
-		}
+		} */
 
-	/*	if( Programm[CommandCounter] == CMD_JMP )
+		if( Programm[CommandCounter] == CMD_JMP )
 		{
-			++CommandCounter */
-					
+			++CommandCounter;
 
+			CommandCounter = CPU_jmp(cpu, Programm[CommandCounter]);
+		} 
+					
+		goto Kek;
 
 
 	}
 	
-	return 0;
+	return 1;
 }
 
 int main()
-{
+{	
+	printf("SSS\n");
 	CPU * cpu = CPU_create();
+
+	printf("DDD\n");	
+
 	int a = 0;
 
 	assembler();
+
+	printf("FFF\n");
 
 	a = CPU_Function(cpu);
 
