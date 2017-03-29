@@ -11,7 +11,7 @@
 
 typedef struct CPU_s
 {
-		Stack* stack;
+		Stack * stack;
 		T ax, bx, cx, dx, ex, fx, gx, hx;
 				
 }CPU;
@@ -268,15 +268,15 @@ void CPU_end(CPU * cpu)
 {
 	CPU_assert(cpu);
 	
-	printf("Successfully");
+	printf("Successfully\n");
 
 	CPU_delete(cpu);
 }
 
-/*void CPU_jmp(CPU * cpu, int value)
+int CPU_jmp(CPU * cpu, int value)
 {
 	return value;
-}*/
+}
 
 
 
