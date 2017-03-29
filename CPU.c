@@ -147,9 +147,12 @@ Kek:	if ( Programm[CommandCounter] ==  CMD_END )
 			CPU_end(cpu);
 		} */
 
-	/*	if( Programm[CommandCounter] == CMD_JMP )
+		if( Programm[CommandCounter] == CMD_JMP )
 		{
-			++CommandCounter */
+			++CommandCounter;
+
+			CommandCounter = CPU_jmp(cpu, Programm[CommandCounter]);
+		} 
 					
 		goto Kek;
 
