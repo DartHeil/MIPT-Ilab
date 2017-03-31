@@ -1,15 +1,19 @@
+#ifndef assembler_H_INCLUDED 
+#define assembler_H_INCLUDED
+
 #define StartSize 10
 #define MOREGOLD 2
+#define Guardian 1488
 typedef double T;
+
 #include <stdio.h>
-#include <math.h>
 #include <stdlib.h>
 typedef struct Stack_s
 {
 	T* data;
 	int size;
 	int top;
-} Stack;
+}Stack;
 
 int CheckStack(Stack * stack)
 {
@@ -31,6 +35,9 @@ int CheckStack(Stack * stack)
 //	if (stack -> top == 0)
 //		return 6;
 	
+	if (stack -> data [0] != Guardian)
+		return 6;
+
 	return 0;
 }
 
@@ -40,7 +47,7 @@ void damp(Stack * stack)
 	int i = 0;
 	Raport = fopen("Raport.txt","a");
 
-	fprintf(Raport, "Проблема в Stack\n";
+	fprintf(Raport, "Проблема в Stack\n");
 
 	fprintf(Raport, "Номер ошибки: %d\n", CheckStack(stack));
 
@@ -90,7 +97,9 @@ Stack* CreateStack()
 	out->size = StartSize;
 	out->data = calloc(out -> size, sizeof(T));
 	
-	out->top = 0;
+	out->top = 1;
+
+	out -> data [0] = Guardian;
 	
 	WrongStackDeath(out);
 
@@ -143,9 +152,12 @@ void stack_push(Stack *stack, T value)
 
 T stack_pop(Stack *stack)
 {
-	WrongStackDeath(stack);
+	WrongStackDeath(stack); 
 
 	stack -> top = stack -> top - 1;
+
+	WrongStackDeath(stack);
+
 	T a = stack -> data [stack -> top];
 	stack -> data [stack->top] = 0;
 
@@ -153,6 +165,7 @@ T stack_pop(Stack *stack)
 
 	return a;
 }
+#endif
 
 
 
