@@ -8,6 +8,12 @@
 #include <stack.h>
 
 #define ERROR -1
+#define NotEquall -2
+#define Equall -3
+#define NotAbove -4
+#define NotAboveOrEquall -5
+#define NotBelow -6
+#define NotBelowOrEquall -7
 
 typedef struct CPU_s
 {
@@ -125,7 +131,10 @@ void CPU_in(CPU * cpu, int reg)
 	if ( reg == gx )
 		cpu -> gx = value;
 	if ( reg == hx )
+	{
+		printf("Я же сказал, невлезай. Теперь пинай на себя, все косяки на твоей совести");
 		cpu -> hx = value;
+	}
 
 	CPU_assert(cpu);
 }
@@ -149,7 +158,11 @@ T CPU_out(CPU * cpu, int reg)
 	if ( reg == gx )
 		return cpu -> gx;
 	if ( reg == hx )
+	{
+		printf("Не, ну распечатать ты его можешь, только сам в него не лезь.");
 		return cpu -> hx;
+	}
+
 	return ERROR;
 }
 
@@ -235,7 +248,10 @@ void CPU_popr(int reg, CPU * cpu)
 	if ( reg == gx )
 		cpu -> gx = stack_pop(cpu -> stack);
 	if ( reg == hx )
+	{
+		printf("Я же сказал, невлезай. Теперь пинай на себя, все косяки на твоей совести");
 		cpu -> hx = stack_pop(cpu -> stack);
+	}
 
 	CPU_assert(cpu);
 }
@@ -259,7 +275,10 @@ void CPU_pushr(int reg, CPU * cpu)
 	if ( reg == gx )
 		CPU_push(cpu, cpu -> gx); 
 	if ( reg == hx )
+	{
+		printf("Я же сказал, невлезай. Теперь пинай на себя, все косяки на твоей совести");
 		CPU_push(cpu, cpu -> hx);
+	}
 
 	CPU_assert(cpu); 
 }
@@ -273,10 +292,122 @@ void CPU_end(CPU * cpu)
 	CPU_delete(cpu);
 }
 
-int CPU_jmp(CPU * cpu, int value)
+int CPU_jmp(CPU * cpu, int Destination)
 {
-	return value;
+	return Destination;
 }
+
+int CPU_je(CPU * cpu, int Destination)
+{
+	T StackPop1 = stack_pop(cpu -> stack);
+	T StackPop2 = stack_pop(cpu -> stack);
+
+	if ( StackPop1 == StackPop2 )
+	{
+		CPU_push(cpu, StackPop1);
+		CPU_push(cpu, StackPop2);
+		return ( CPU_jmp(cpu, Destination) );
+	}
+	
+	else
+		return NotEquall;
+}
+
+int CPU_jne(CPU * cpu, int Destination)
+{
+	T StackPop1 = stack_pop(cpu -> stack);
+	T StackPop2 = stack_pop(cpu -> stack);
+
+	if ( StackPop1 != StackPop2 )
+	{
+		CPU_push(cpu, StackPop1);
+		CPU_push(cpu, StackPop2);
+		return ( CPU_jmp(cpu, Destination) );
+	}
+	
+	else
+		return Equall;
+}
+
+
+int CPU_ja(CPU * cpu, int Destination)
+{
+	T StackPop1 = stack_pop(cpu -> stack);
+	T StackPop2 = stack_pop(cpu -> stack);
+
+	if ( StackPop1 > StackPop2 )
+	{
+		CPU_push(cpu, StackPop1);
+		CPU_push(cpu, StackPop2);
+		return ( CPU_jmp(cpu, Destination) );
+	}
+	
+	else
+		return NotAbove;
+}
+
+int CPU_jae(CPU * cpu, int Destination)
+{
+	T StackPop1 = stack_pop(cpu -> stack);
+	T StackPop2 = stack_pop(cpu -> stack);
+
+	if ( StackPop1 >= StackPop2 )
+	{
+		CPU_push(cpu, StackPop1);
+		CPU_push(cpu, StackPop2);
+		return ( CPU_jmp(cpu, Destination) );
+	}
+	
+	else
+		return NotAboveOrEquall;
+}
+
+int CPU_jb(CPU * cpu, int Destination)
+{
+	T StackPop1 = stack_pop(cpu -> stack);
+	T StackPop2 = stack_pop(cpu -> stack);
+
+	if ( StackPop1 < StackPop2 )
+	{
+		CPU_push(cpu, StackPop1);
+		CPU_push(cpu, StackPop2);
+		return ( CPU_jmp(cpu, Destination) );
+	}
+	
+	else
+		return NotBelow;
+}
+
+int CPU_jbe(CPU * cpu, int Destination)
+{
+	T StackPop1 = stack_pop(cpu -> stack);
+	T StackPop2 = stack_pop(cpu -> stack);
+
+	if ( StackPop1 <= StackPop2 )
+	{
+		CPU_push(cpu, StackPop1);
+		CPU_push(cpu, StackPop2);
+		return ( CPU_jmp(cpu, Destination) );
+	}
+	
+	else
+		return NotBelowOrEquall;
+}
+
+int CPU_call(CPU * cpu, int Destination, int StartPointer)
+{
+	cpu -> hx = (T) StartPointer;
+	return Destination;
+}
+
+int CPU_ret(CPU * cpu)
+{
+	T a = cpu -> hx;
+	cpu -> hx = -1;
+	
+	return a;
+}
+	
 
 
 
