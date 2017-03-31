@@ -22,7 +22,7 @@ int CPU_Function(CPU * cpu)
 	int CountOfCommand = 0;
 	FILE* CPU_code = fopen( "CPU_code.txt", "r" );
 
-	printf("RRR\n");
+//	printf("RRR\n");
 	
 /*	if((CPU_code == NULL)
 	{
@@ -47,7 +47,7 @@ int CPU_Function(CPU * cpu)
 	for(i = 0; i < CountOfCommand; i++)
 	{
 	    fscanf(CPU_code, "%d", &Programm[i]);
-	    printf("c[%d]=%d\n", i, Programm[i]);
+//	    printf("c[%d]=%d\n", i, Programm[i]);
 	}
 	fclose(CPU_code);
 
@@ -58,7 +58,8 @@ int CPU_Function(CPU * cpu)
 	fclose(CPU_code); */	
 	
 
-Kek:	if ( Programm[CommandCounter] ==  CMD_END )
+UntilEnd:
+	if ( Programm[CommandCounter] ==  CMD_END )
 	{
 		++ CommandCounter;
 		CPU_end(cpu);
@@ -153,10 +154,81 @@ Kek:	if ( Programm[CommandCounter] ==  CMD_END )
 
 			CommandCounter = CPU_jmp(cpu, Programm[CommandCounter]);
 		} 
-					
-		goto Kek;
 
+		if( Programm[CommandCounter] == CMD_JE )
+		{
+			++CommandCounter;
 
+			int IsEquall = CPU_je(cpu, Programm[CommandCounter]);
+
+			if (IsEquall != NotEquall)
+				CommandCounter = IsEquall;
+		}
+
+		if( Programm[CommandCounter] == CMD_JNE )
+		{
+			++CommandCounter;
+
+			int IsEquall = CPU_jne(cpu, Programm[CommandCounter]);
+
+			if (IsEquall != Equall)
+				CommandCounter = IsEquall;
+		}
+
+		if( Programm[CommandCounter] == CMD_JA )
+		{
+			++CommandCounter;
+
+			int IsAbove = CPU_ja(cpu, Programm[CommandCounter]);
+
+			if (IsAbove != NotAbove)
+				CommandCounter = IsAbove;
+		}
+
+		if( Programm[CommandCounter] == CMD_JAE )
+		{
+			++CommandCounter;
+
+			int IsAboveOrEquall = CPU_jae(cpu, Programm[CommandCounter]);
+
+			if (IsAboveOrEquall != NotAboveOrEquall)
+				CommandCounter = IsAboveOrEquall;
+		}
+
+		if( Programm[CommandCounter] == CMD_JB )
+		{
+			++CommandCounter;
+
+			int IsBelow = CPU_jb(cpu, Programm[CommandCounter]);
+
+			if (IsBelow != NotBelow)
+				CommandCounter = IsBelow;
+		}
+
+		if( Programm[CommandCounter] == CMD_JBE )
+		{
+			++CommandCounter;
+
+			int IsBelowOrEquall = CPU_jbe(cpu, Programm[CommandCounter]);
+
+			if (IsBelowOrEquall != NotBelowOrEquall)
+				CommandCounter = IsBelowOrEquall;
+		}
+
+		if( Programm[CommandCounter] == CMD_CALL )
+		{
+			++CommandCounter;
+
+			CommandCounter = CPU_call(cpu, Programm[CommandCounter], CommandCounter + 1);
+		}	
+
+		if( Programm[CommandCounter] == CMD_RET )
+		{
+			CommandCounter = CPU_ret(cpu);
+		}	
+		
+
+		goto UntilEnd;
 	}
 	
 	return 1;
@@ -164,16 +236,16 @@ Kek:	if ( Programm[CommandCounter] ==  CMD_END )
 
 int main()
 {	
-	printf("SSS\n");
+//	printf("SSS\n");
 	CPU * cpu = CPU_create();
 
-	printf("DDD\n");	
+//	printf("DDD\n");	
 
 	int a = 0;
 
 	assembler();
 
-	printf("FFF\n");
+//	printf("FFF\n");
 
 	a = CPU_Function(cpu);
 
