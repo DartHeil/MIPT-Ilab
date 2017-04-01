@@ -43,6 +43,8 @@ int CheckStack(Stack * stack)
 
 void damp(Stack * stack)
 {
+	printf("Смотри рапорт, я сдох(P.S. Твой любимый стэк)\n");
+
 	FILE * Raport;
 	int i = 0;
 	Raport = fopen("Raport.txt","a");
@@ -57,13 +59,14 @@ void damp(Stack * stack)
 	fprintf(Raport, "Указатель на data: %p\n",  stack -> data);
 	fprintf(Raport,"Top по счету: %d\n", stack -> top);
 	fprintf(Raport,"Размер стэка: %d\n", stack -> size);
-	fprintf(Raport, "Stack:");
+	fprintf(Raport, "Stack:\n");
 
 	if (stack -> data)
 		for (i = 0; i <= stack -> size; i++)
 			fprintf(Raport, "%lf\n", stack -> data [i]);
 
-	fprintf(Raport, "Я закончился");
+	fprintf(Raport, "Я закончился\n");
+	fprintf(Raport, "\n");
 
 	fclose(Raport);
 }
@@ -97,7 +100,7 @@ Stack* CreateStack()
 	out->size = StartSize;
 	out->data = calloc(out -> size, sizeof(T));
 	
-	out->top = 1;
+	out -> top = 1;
 
 	out -> data [0] = Guardian;
 	
@@ -156,7 +159,8 @@ T stack_pop(Stack *stack)
 
 	stack -> top = stack -> top - 1;
 
-	WrongStackDeath(stack);
+	if( stack -> top < 0 )
+		WrongStackDeath(stack);
 
 	T a = stack -> data [stack -> top];
 	stack -> data [stack->top] = 0;
