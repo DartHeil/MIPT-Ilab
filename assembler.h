@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "commands.h"
+#include <commands.h>
 
 #define MAX_COMMANDS 1000
 #define MAXLEN 100
@@ -20,12 +20,24 @@ typedef struct Pointer_s
 
 
 
+int GetSize(FILE * f)
+{
+	char * command = (char*) calloc(StartSize, sizeof(char));
+	int i = 0;
+
+	while ( fscanf ( f, "%s", command ) == 1 )
+		i++;
+	return i;
+}
+	
+
+
 Pointer * As_Resize(Pointer * Pointers, int number)
 {
 	int i = 0;
 	Pointer * suicider = NULL;
 
-	suicider  = realloc(Pointers, (number - 1) * 2);
+	suicider  = realloc(Pointers, (number - 1) * 2 * sizeof(int));
 
 	if( suicider != NULL)
 		for (i = number; i < number * 2; i++)
@@ -54,13 +66,15 @@ Pointer * CollectPointers()
 	int i = 0;
 	int number = 0;
 	int length = 0;
+	int Len = MAXLEN;
 	int check = StartSize;
 	int n = 0;
-
 	FILE* f = fopen ( "program.txt", "r" );
-	char command [ MAXLEN ] = "";
 
-	while ( fscanf ( f, "%s", &command ) == 1 )
+
+	char * command = (char*) calloc(Len, sizeof(char));
+
+	while ( fscanf ( f, "%s", command ) == 1 )
 	{	
 		if ( (command [0] == ':') && (strcmp ( command, ":main" ) != 0) )
 		{
@@ -88,35 +102,25 @@ Pointer * CollectPointers()
 		i++;
 	}
 
+	free( command );
+	fclose (f);	
+
 	return Pointers;
 }
 
 
 
-void ass_ ( double* commands, Pointer * Pointers );
-
-
-void assembler ( )
+void ass_ ( double * commands, Pointer * Pointers )
 {
-    double commands [ MAX_COMMANDS ] = {};
-    Pointer * Pointers = CollectPointers();
-
-    ass_ ( &commands, Pointers );
-}
-
-
-
-void ass_ ( double* commands, Pointer * Pointers )
-{
-    char command [ MAXLEN ] = "";
+    char * command  = (char*) calloc(MAXLEN, sizeof(char));
     double value = 0;
     int  k = 0, i = 0, j = 0;
     int check = 0;
-
     FILE* f = fopen ( "program.txt", "r" );
+
     i = 0;
 
-    while ( fscanf ( f, "%s", &command ) == 1 )
+    while ( fscanf ( f, "%s", command ) == 1 )
         {
             if ( strcmp ( command, "push" ) == 0 )
             {
@@ -142,7 +146,7 @@ void ass_ ( double* commands, Pointer * Pointers )
             {
                 commands [i] = CMD_POPR;
                 ++ i;
-                fscanf ( f, "%s", &command );
+                fscanf ( f, "%s", command );
                 if ( strcmp ( command, "ax" ) == 0 )
                     commands [i] = ax;
                 if ( strcmp ( command, "bx" ) == 0 )
@@ -172,7 +176,7 @@ void ass_ ( double* commands, Pointer * Pointers )
             {
                 commands [i] = CMD_OUT;
                 ++ i;
-                fscanf ( f, "%s", &command );
+                fscanf ( f, "%s", command );
                 if ( strcmp ( command, "ax" ) == 0 )
                     commands [i] = ax;
                 if ( strcmp ( command, "bx" ) == 0 )
@@ -220,8 +224,8 @@ void ass_ ( double* commands, Pointer * Pointers )
             {
                 commands [i] = CMD_PUSHR;
                 ++ i;
-                fscanf ( f, "%s", &command );
-                    if ( strcmp ( command, "ax" ) == 0 )
+                fscanf ( f, "%s", command );
+                if ( strcmp ( command, "ax" ) == 0 )
                     commands [i] = ax;
                 if ( strcmp ( command, "bx" ) == 0 )
                     commands [i] = bx;
@@ -244,7 +248,7 @@ void ass_ ( double* commands, Pointer * Pointers )
             {
                 commands [i] = CMD_IN;
                 ++ i;
-                fscanf ( f, "%s", &command );
+                fscanf ( f, "%s", command );
                 if ( strcmp ( command, "ax" ) == 0 )
                     commands [i] = ax;
                 if ( strcmp ( command, "bx" ) == 0 )
@@ -297,6 +301,7 @@ void ass_ ( double* commands, Pointer * Pointers )
 			check = 0;
 		}			
 
+		free(Point);
 
                 ++ i;
              }
@@ -333,6 +338,7 @@ void ass_ ( double* commands, Pointer * Pointers )
 			check = 0;
 		}			
 
+		free(Point);
 
                 ++ i;
              }
@@ -361,7 +367,7 @@ void ass_ ( double* commands, Pointer * Pointers )
 
 		if ( check == 0)
 		{
-			printf("Обращение к несуществующей метке %s\n", Point);
+			printf("Обращение к несуществующей метке %s.\n", Point);
 			exit(1);
 		}
 		else
@@ -369,6 +375,7 @@ void ass_ ( double* commands, Pointer * Pointers )
 			check = 0;
 		}			
 
+		free(Point);
 
                 ++ i;
              }
@@ -405,6 +412,7 @@ void ass_ ( double* commands, Pointer * Pointers )
 			check = 0;
 		}			
 
+		free(Point);
 
                 ++ i;
              }
@@ -440,6 +448,8 @@ void ass_ ( double* commands, Pointer * Pointers )
 		{
 			check = 0;
 		}			
+
+		free(Point);
 
                 ++ i;
              }
@@ -477,7 +487,8 @@ void ass_ ( double* commands, Pointer * Pointers )
 			check = 0;
 		}			
 
-		
+		free(Point);		
+
                 ++ i;
              }
 
@@ -512,6 +523,8 @@ void ass_ ( double* commands, Pointer * Pointers )
 		{
 			check = 0;
 		}
+
+		free(Point);
 
                 ++ i;
              }
@@ -548,6 +561,8 @@ void ass_ ( double* commands, Pointer * Pointers )
 			check = 0;
 		}		
 
+		free(Point);
+
                 ++ i;
              }
 
@@ -558,16 +573,31 @@ void ass_ ( double* commands, Pointer * Pointers )
             } 
         }
 
-        fclose (f);
+	fclose (f);       
 
     free ( Pointers );
+    free( command );
     FILE *p = fopen ( "CPU_code.txt", "w" );
     for ( k = 0; k < i; ++ k )
     {
         fprintf ( p, "%lg ", commands [k] );
     }
+    free( commands );
     fclose (p);
 
 }
 
+
+
+void assembler ( )
+{
+    FILE* f = fopen ( "program.txt", "r" );
+
+    double * commands = (double*) calloc(GetSize(f), sizeof(double));
+    Pointer * Pointers = CollectPointers();
+
+    ass_ ( commands, Pointers );
+
+    fclose (f);
+}
 #endif
